@@ -47,7 +47,7 @@ def normalize_data(dst_train):
         scaler = MinMaxScaler()
         dst_train.loc[ids, features_n] = scaler.fit_transform(
             dst_train.loc[ids, features_n])
-    return normalized_data
+    return dst_train
 
 
 def make_interactions(dataframe):
