@@ -58,12 +58,12 @@ if __name__ == "__main__":
     # y_valid = np.eye(4)[y_valid]
 
     # ---- Convert the tensor----
-    featuresTrain = torch.from_numpy(X_train).float()
-    targetsTrain = torch.from_numpy(y_train).type(
+    featuresTrain = torch.from_numpy(np.array(X_train)).float()
+    targetsTrain = torch.from_numpy(np.array(y_train)).type(
         torch.LongTensor)  # data type is long
 
-    featuresValid = torch.from_numpy(X_valid).float()
-    targetsValid = torch.from_numpy(y_valid).type(
+    featuresValid = torch.from_numpy(np.array(X_valid)).float()
+    targetsValid = torch.from_numpy(np.array(y_valid)).type(
         torch.LongTensor)  # data type is long
 
     # ---- dataloader to load the tensor----
