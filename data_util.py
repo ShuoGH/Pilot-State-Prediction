@@ -6,7 +6,7 @@ from sklearn.preprocessing import PolynomialFeatures
 
 def drop_features(data_set):
     '''
-    Drop the experiment, time, seat and id
+    Drop the experiment, time, seat and id(test data set)
     '''
     dataframe = pd.DataFrame(data_set)
     for i in {'experiment', 'time', 'seat', 'id'}:
@@ -37,6 +37,8 @@ def normalize_data(dst_train):
     Return:
         the normalized data frame
     '''
+    features_n = ["eeg_fp1", "eeg_f7", "eeg_f8", "eeg_t4", "eeg_t6", "eeg_t5", "eeg_t3", "eeg_fp2", "eeg_o1", "eeg_p3",
+                  "eeg_pz", "eeg_f3", "eeg_fz", "eeg_f4", "eeg_c4", "eeg_p4", "eeg_poz", "eeg_c3", "eeg_cz", "eeg_o2", "ecg", "r", "gsr"]
     dst_train['pilot'] = 100 * dst_train['seat'] + dst_train['crew']
     pilots = dst_train["pilot"].unique()
     print("Normalizing the data by pilots....")

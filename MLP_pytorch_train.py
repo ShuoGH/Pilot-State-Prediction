@@ -43,12 +43,13 @@ if __name__ == "__main__":
     X = dst_df.drop(columns=['event'], axis=1)
     Y = dst_df['event']
 
-    # ---- normalize data set----
+    # ---- normalize data set and drop some features----
     X_normalized = data_util.normalize_data(X)
+    X_normalized_droped = data_util.drop_features(X_normalized)
 
     # ----split the train and val data set. Freezing the random seed----
     X_train, X_valid, y_train, y_valid = train_test_split(
-        X_normalized, Y, test_size=0.2, random_state=42)
+        X_normalized_droped, Y, test_size=0.2, random_state=42)
 
     # # ---- one-hot encode the class----
     # # return ndarray, in which each row represents a class
@@ -88,9 +89,9 @@ if __name__ == "__main__":
     learning_rate = 0.01
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
-    # train_losses = []
+    train_losses = []
     # train_acc = []
-    # valid_losses = []
+    valid_losses = []
     # valid_acc = []
     num_epochs = 50
     for e in range(num_epochs):
@@ -141,11 +142,16 @@ if __name__ == "__main__":
         # calculate average losses
         train_loss = train_loss / len(train_loader.dataset)
         valid_loss = valid_loss / len(valid_loader.dataset)
+        train_losses.append(train_loss)
+        valid_losses.append(valid_loss)
+
         elapsed_time = time.time() - start_time
         # print training/validation statistics
         print('Epoch: {} \tTraining Loss: {:.6f} \tValidation Loss: {:.6f} \tTime: {:.2f}'.format(
             e+1, train_loss, valid_loss, elapsed_time))
-
+    print("*"*10)
+    print("Train losses history:\n {}".format(train_losses))
+    print("Validation losses history:\n {}".format(valid_losses))
     #     if e % 1 == 0:
     #         print("[{}/{}], Train Loss: {} Train Acc: {}, Validation Loss : {}, Validation Acc: {} ".format(e+1,
     #         num_epochs, np.round(train_loss.item(), 3), np.round(train_accuracy.item(), 3),
