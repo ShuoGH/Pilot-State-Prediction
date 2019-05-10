@@ -4,6 +4,10 @@ import mlp
 from sklearn.model_selection import train_test_split
 import data_util
 import torch
+import torch.utils.data
+from torch.utils.data import DataLoader
+from torch import nn
+import time
 
 if __name__ == "__main__":
     dtypes = {"crew": "int8",
@@ -41,16 +45,18 @@ if __name__ == "__main__":
         "./input/undersample_data_5w_each_event.csv", dtype=dtypes)
     print("The dimension of data: {}".format(dst_df.shape))
 
-    X = dst_df.drop(columns=['event'], axis=1)
-    Y = dst_df['event']
+    # ---- drop "experiments",time","seat","id"----
+    X_droped = data_util.drop_features(dst_df)
 
-    # ---- normalize data set and drop some features----
-    X_normalized = data_util.normalize_data(X)
-    X_normalized_droped = data_util.drop_features(X_normalized)
+    # ----transfer the labels----
+    dic_class = {'A': 0, 'B': 1, 'C': 2, 'D': 3}
+    X_droped["event"] = X_droped["event"].apply(lambda x: dic_class[x])
+    X = X_droped.drop(columns=['event'], axis=1)
+    Y = X_droped['event']
 
     # ----split the train and val data set. Freezing the random seed----
     X_train, X_valid, y_train, y_valid = train_test_split(
-        X_normalized_droped, Y, test_size=0.2, random_state=42)
+        X, Y, test_size=0.2, random_state=42)
 
     # # ---- one-hot encode the class----
     # # return ndarray, in which each row represents a class
@@ -65,7 +71,7 @@ if __name__ == "__main__":
     featuresValid = torch.from_numpy(np.array(X_valid)).float()
     targetsValid = torch.from_numpy(np.array(y_valid)).type(
         torch.LongTensor)  # data type is long
-
+    print("success..")
     # ---- dataloader to load the tensor----
     batch_size = 512
     train = torch.utils.data.TensorDataset(featuresTrain, targetsTrain)
@@ -75,7 +81,7 @@ if __name__ == "__main__":
 
     # ---- initialize the model----
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    n_features = 27
+    n_features = 24
     n_neurons = [100, 50]
     dropouts = [0.3, 0.2]
 
@@ -104,6 +110,7 @@ if __name__ == "__main__":
         for i, (features, labels) in enumerate(train_loader):
             features, labels = features.to(device), labels.to(device)
             optimizer.zero_grad()
+            # print(features.size())
             outputs = model(features)
             loss = error(outputs, labels)
 
