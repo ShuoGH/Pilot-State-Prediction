@@ -6,6 +6,7 @@ Train data recorded the data set of pilots in four statments.
 
 
 To see the data, see the Kaggle [data](https://www.kaggle.com/c/reducing-commercial-aviation-fatalities/data).
+
 | Category | State Name            | Count   |
 |----------|-----------------------|---------|
 | A        | Baseline              | 2848809 |
