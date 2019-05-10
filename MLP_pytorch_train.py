@@ -3,6 +3,7 @@ import pandas as pd
 import mlp
 from sklearn.model_selection import train_test_split
 import data_util
+import torch
 
 if __name__ == "__main__":
     dtypes = {"crew": "int8",
