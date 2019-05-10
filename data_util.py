@@ -1,55 +1,53 @@
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import PolynomialFeatures
 
 
-def get_rcaf_data_set(input_path, under_sample=False, normalize=False):
+def drop_features(data_set):
     '''
-    To read the data frame.
-    Input parameter:
-        input_path: path to open the csv file 
-        downsample: if True, load the data set which is downsampled
-        normalize: if True, load the data set which is normalized
-    return:
-        data frame which contains the data set.
-
-    Downsample:
-        the downsampled data set contains that 5w data set for each event
+    Drop the experiment, time, seat and id
     '''
-    dtypes = {"crew": "int8",
-              "experiment": "category",
-              "time": "float32",
-              "seat": "int8",
-              "eeg_fp1": "float32",
-              "eeg_f7": "float32",
-              "eeg_f8": "float32",
-              "eeg_t4": "float32",
-              "eeg_t6": "float32",
-              "eeg_t5": "float32",
-              "eeg_t3": "float32",
-              "eeg_fp2": "float32",
-              "eeg_o1": "float32",
-              "eeg_p3": "float32",
-              "eeg_pz": "float32",
-              "eeg_f3": "float32",
-              "eeg_fz": "float32",
-              "eeg_f4": "float32",
-              "eeg_c4": "float32",
-              "eeg_p4": "float32",
-              "eeg_poz": "float32",
-              "eeg_c3": "float32",
-              "eeg_cz": "float32",
-              "eeg_o2": "float32",
-              "ecg": "float32",
-              "r": "float32",
-              "gsr": "float32",
-              "event": "category",
-              }
-    if under_sample:
-        pass
-    else:
-        df = pd.read_csv(input, dtype=dtypes)
-    return df
+    dataframe = pd.DataFrame(data_set)
+    for i in {'experiment', 'time', 'seat', 'id'}:
+        if i in dataframe.columns:
+            dataframe = dataframe.drop([i], axis=1)
+    return dataframe
 
 
-# feature engineering
+def data_convert(data_set):
+    '''
+    Used to conver the elements in data frame from object to float. (if you don't drop these columns)
+    Input:
+        train data set / test data set
+    Return:
+        converted data set
+    '''
+    dic = {'CA': 0, 'DA': 1, 'SS': 2, 'LOFT': 3}
+    dic = {'A': 0, 'B': 1, 'C': 2, 'D': 3}
+
+    data_set["experiment"] = data_set["experiment"].apply(lambda x: dic[x])
+    data_set["event"] = data_set["event"].apply(lambda x: dic[x])
+    return data_set
+
+
+def normalize_data(dst_train):
+    '''
+    Normalize the data set by the pilots.
+    Return:
+        the normalized data frame
+    '''
+    dst_train['pilot'] = 100 * dst_train['seat'] + dst_train['crew']
+    pilots = dst_train["pilot"].unique()
+    print("Normalizing the data by pilots....")
+    for pilot in pilots:
+        ids = dst_train[dst_train["pilot"] == pilot].index
+        scaler = MinMaxScaler()
+        dst_train.loc[ids, features_n] = scaler.fit_transform(
+            dst_train.loc[ids, features_n])
+    return normalized_data
+
+
 def make_interactions(dataframe):
     poly = PolynomialFeatures(
         degree=2, interaction_only=True, include_bias=False)
@@ -62,7 +60,7 @@ def make_interactions(dataframe):
 
 def feature_engg(df):
     '''
-    Input: 
+    Input:
         DataFrame which contains the data set
     return:
         DataFrame which did feature engineer
