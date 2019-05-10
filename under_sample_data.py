@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     print("writing the data frame to csv.")
     under_sample_data.to_csv(
-        "undersample_data_5w_each_event.csv", index=None, header=True)
+        "./input/undersample_data_5w_each_event.csv", index=None, header=True)
 
     time_elapsed = time.time() - since
     print('Under sampling completed: {:.0f}m {:.0f}s'.format(
