@@ -43,7 +43,7 @@ if __name__ == "__main__":
 
     print("read the data frame...")
     train_df = pd.read_csv(
-        "../reducing-Commercial-Aviation-Fatalities//train.csv", dtype=dtypes)
+        "../reducing-Commercial-Aviation-Fatalities/train.csv", dtype=dtypes)
 
     print("under sample the data set...")
     under_sample_data = under_sample(train_df, undersample_number=50000)
