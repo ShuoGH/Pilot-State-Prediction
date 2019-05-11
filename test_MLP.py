@@ -10,6 +10,9 @@ from torch.utils.data import DataLoader
 from torch import nn
 import time
 from tqdm import tqdm
+from sklearn.exceptions import DataConversionWarning
+import warnings
+warnings.filterwarnings(action='ignore', category=DataConversionWarning)
 
 
 def format_data_set(data_set):
@@ -71,7 +74,7 @@ if __name__ == "__main__":
         for i, (x_batch,) in enumerate(test_loader):
             x_batch = x_batch.to(device)
             # print(x_batch)
-            y_pred = model(x_batch).detach().numpy()
+            y_pred = model(x_batch).to('cpu').detach().numpy()
 
             if prediction is None:
                 prediction = y_pred
