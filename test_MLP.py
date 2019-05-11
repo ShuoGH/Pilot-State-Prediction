@@ -74,12 +74,18 @@ if __name__ == "__main__":
         for i, (x_batch,) in enumerate(test_loader):
             x_batch = x_batch.to(device)
             # print(x_batch)
-            y_pred = model(x_batch).to('cpu').detach().numpy()
 
+            y_pred = model(x_batch).to('cpu').detach().numpy()
+            # ----find the index of the label----
+            class_index = np.argmax(y_pred, axis=1)
+            y_pred_batch = np.zeros(y_pred.shape)
+            y_pred_batch[np.arange(y_pred.shape[0]), class_index] = 1
+            print(y_pred)
+            print(y_pred_batch)
             if prediction is None:
-                prediction = y_pred
+                prediction = y_pred_batch
             else:
-                prediction = np.append(prediction, y_pred, axis=0)
+                prediction = np.append(prediction, y_pred_batch, axis=0)
 
     print("Finish test prediction, the length is {}".format(len(prediction)))
     # save
