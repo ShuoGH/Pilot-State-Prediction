@@ -19,10 +19,12 @@ def format_data_set(data_set):
     Return:
         formatted data set.
     '''
-    scaler = StandardScaler()
     X_droped = data_util.drop_features(data_set)
     # print(X_droped.shape) # 50000 24
-    X_droped_scaled = scaler.transform(X_droped)
+
+    # ----scale the data set----
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X_droped)
     return X_droped_scaled
 
 
@@ -79,7 +81,7 @@ if __name__ == "__main__":
 
     # ---- Store the prediction of the models----
     prediction = None
-    print(Predicting...)
+    print("Predicting...")
     for test_chunk in tqdm(iterator):
         test_chunk_copy = test_chunk.copy()
         test_data_5w = format_data_set(test_chunk_copy)
