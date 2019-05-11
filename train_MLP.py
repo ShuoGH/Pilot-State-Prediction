@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import mlp
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 import data_util
 import torch
 import torch.utils.data
@@ -54,9 +55,13 @@ if __name__ == "__main__":
     X = X_droped.drop(columns=['event'], axis=1)
     Y = X_droped['event']
 
+    # ----scale the data set----
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
     # ----split the train and val data set. Freezing the random seed----
     X_train, X_valid, y_train, y_valid = train_test_split(
-        X, Y, test_size=0.2, random_state=42)
+        X_scaled, Y, test_size=0.2, random_state=42)
 
     # # ---- one-hot encode the class----
     # # return ndarray, in which each row represents a class
@@ -93,14 +98,15 @@ if __name__ == "__main__":
     error = nn.NLLLoss()
 
     # Adam Optimizer
-    learning_rate = 0.01
+    learning_rate = 0.001
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
     train_losses = []
     # train_acc = []
     valid_losses = []
     # valid_acc = []
-    num_epochs = 50
+    num_epochs = 100
+
     for e in range(num_epochs):
         start_time = time.time()
         # keep track of training and validation loss
@@ -109,6 +115,7 @@ if __name__ == "__main__":
         model.train()
         for i, (features, labels) in enumerate(train_loader):
             features, labels = features.to(device), labels.to(device)
+            # print(labels.size())
             optimizer.zero_grad()
             # print(features.size())
             outputs = model(features)
@@ -135,8 +142,8 @@ if __name__ == "__main__":
             features, labels = features.to(device), labels.to(device)
             optimizer.zero_grad()
             outputs = model(features)
+
             loss = error(outputs, labels)
-            # loss = error(outputs, labels)
             valid_loss += loss.item()
 
             # _, predicted = torch.max(outputs.data, 1)
@@ -157,9 +164,13 @@ if __name__ == "__main__":
         # print training/validation statistics
         print('Epoch: {} \tTraining Loss: {:.6f} \tValidation Loss: {:.6f} \tTime: {:.2f}'.format(
             e+1, train_loss, valid_loss, elapsed_time))
+
     print("*"*10)
-    print("Train losses history:\n {}".format(train_losses))
-    print("Validation losses history:\n {}".format(valid_losses))
+    # print("Train losses history:\n {}".format(train_losses))
+    # print("Validation losses history:\n {}".format(valid_losses))
+    print("done.")
+    torch.save(model.state_dict(), './trained_model/MLP_10thMay.model')
+
     #     if e % 1 == 0:
     #         print("[{}/{}], Train Loss: {} Train Acc: {}, Validation Loss : {}, Validation Acc: {} ".format(e+1,
     #         num_epochs, np.round(train_loss.item(), 3), np.round(train_accuracy.item(), 3),
