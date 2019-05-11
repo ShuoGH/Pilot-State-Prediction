@@ -95,8 +95,10 @@ if __name__ == "__main__":
               }
     # ---- load the data set----
     print("Loading the train data and test data....")
-    train_df = pd.read_csv("../input/train.csv", dtype=dtypes)
-    test_df = pd.read_csv("../input/test.csv", dtype=dtypes)
+    train_df = pd.read_csv(
+        "../reducing-Commercial-Aviation-Fatalities/train.csv", dtype=dtypes)
+    test_df = pd.read_csv(
+        "../reducing-Commercial-Aviation-Fatalities/test.csv", dtype=dtypes)
     print("Load data successfully.")
 
     # ---- data processing ----
@@ -133,4 +135,4 @@ if __name__ == "__main__":
     submission = pd.DataFrame(np.concatenate((np.arange(len(test_df))[
                               :, np.newaxis], pred_test), axis=1), columns=['id', 'A', 'B', 'C', 'D'])
     submission['id'] = submission['id'].astype(int)
-    submission.to_csv("submission_lightGBM_1.csv", index=False)
+    submission.to_csv("./results/submission_lightGBM_1.csv", index=False)
