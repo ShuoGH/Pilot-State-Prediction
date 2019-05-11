@@ -3,3 +3,4 @@ results
 .DS_Store
 *.out
 __pycache__
+trained_models
