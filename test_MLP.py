@@ -80,8 +80,8 @@ if __name__ == "__main__":
             class_index = np.argmax(y_pred, axis=1)
             y_pred_batch = np.zeros(y_pred.shape)
             y_pred_batch[np.arange(y_pred.shape[0]), class_index] = 1
-            print(y_pred)
-            print(y_pred_batch)
+            # print(y_pred)
+            # print(y_pred_batch)
             if prediction is None:
                 prediction = y_pred_batch
             else:

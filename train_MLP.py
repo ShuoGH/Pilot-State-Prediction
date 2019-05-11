@@ -19,8 +19,13 @@ if __name__ == "__main__":
               }
 
     print("loading the data...")
+
+    # dst_df = pd.read_csv(
+    #     "./input/undersample_data_5w_each_event.csv", dtype=dtypes)
+    # ---- read all the train data----
     dst_df = pd.read_csv(
-        "./input/undersample_data_5w_each_event.csv", dtype=dtypes)
+        "../reducing-Commercial-Aviation-Fatalities/train.csv", dtype=dtypes)
+
     print("The dimension of data: {}".format(dst_df.shape))
 
     # ---- drop "experiments",time","seat","id"----
