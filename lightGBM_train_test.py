@@ -5,6 +5,9 @@ from tqdm import tqdm
 from sklearn.preprocessing import MinMaxScaler
 import lightgbm as lgb
 from sklearn.metrics import confusion_matrix, log_loss
+import warnings
+from sklearn.exceptions import DataConversionWarning
+warnings.filterwarnings(action='ignore', category=DataConversionWarning)
 
 '''
 For the example of using lightGBM case:
