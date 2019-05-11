@@ -24,7 +24,7 @@ def format_data_set(data_set):
 
     # ----scale the data set----
     scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X_droped)
+    X_droped_scaled = scaler.fit_transform(X_droped)
     return X_droped_scaled
 
 
@@ -33,29 +33,6 @@ if __name__ == "__main__":
               "experiment": "category",
               "time": "float32",
               "seat": "int8",
-              "eeg_fp1": "float32",
-              "eeg_f7": "float32",
-              "eeg_f8": "float32",
-              "eeg_t4": "float32",
-              "eeg_t6": "float32",
-              "eeg_t5": "float32",
-              "eeg_t3": "float32",
-              "eeg_fp2": "float32",
-              "eeg_o1": "float32",
-              "eeg_p3": "float32",
-              "eeg_pz": "float32",
-              "eeg_f3": "float32",
-              "eeg_fz": "float32",
-              "eeg_f4": "float32",
-              "eeg_c4": "float32",
-              "eeg_p4": "float32",
-              "eeg_poz": "float32",
-              "eeg_c3": "float32",
-              "eeg_cz": "float32",
-              "eeg_o2": "float32",
-              "ecg": "float32",
-              "r": "float32",
-              "gsr": "float32",
               "event": "category",
               }
 
@@ -68,8 +45,8 @@ if __name__ == "__main__":
     model = mlp.MLPNetwork(n_features, n_neurons, dropouts)
     model = model.to(device)
     # ---- load the pretrained weights----
-    model.load_state_dict(torch.load(
-        './trained_model/MLP_10thMay.model'))
+    # model.load_state_dict(torch.load(
+    #     './trained_model/MLP_10thMay.model'))
     model.eval()
 
     # ----loading the data----
@@ -84,13 +61,16 @@ if __name__ == "__main__":
     print("Predicting...")
     for test_chunk in tqdm(iterator):
         test_chunk_copy = test_chunk.copy()
-        test_data_5w = format_data_set(test_chunk_copy)
+        test_data_5w = torch.from_numpy(
+            format_data_set(test_chunk_copy)).float()
 
         test = torch.utils.data.TensorDataset(test_data_5w)
+        # print(test)
         test_loader = DataLoader(test, batch_size=batch_size, shuffle=False)
 
         for i, (x_batch,) in enumerate(test_loader):
             x_batch = x_batch.to(device)
+            # print(x_batch)
             y_pred = model(x_batch).detach().numpy()
 
             if prediction is None:
