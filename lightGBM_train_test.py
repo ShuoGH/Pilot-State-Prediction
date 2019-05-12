@@ -19,6 +19,9 @@ For the example of using lightGBM case:
         gbm.save_model('model.txt')
     load lgbm classifier:
         bst = lgb.Booster(model_file='model.txt')
+
+Learn to tune the parameters of the lightGBM:
+    https://www.cnblogs.com/bjwu/p/9307344.html
 '''
 
 
@@ -98,9 +101,14 @@ if __name__ == "__main__":
               "event": "category",
               }
     # ---- load the data set----
-    print("Loading the train data and test data....")
+    # print("Loading the train data and test data....")
+    # train_df = pd.read_csv(
+    #     "../reducing-Commercial-Aviation-Fatalities/train.csv", dtype=dtypes)
+
+    under_sample_num = "5w"
     train_df = pd.read_csv(
-        "../reducing-Commercial-Aviation-Fatalities/train.csv", dtype=dtypes)
+        "../input/undersample_data_{}_each_event.csv".format(under_sample_num), dtype=dtypes)
+
     test_df = pd.read_csv(
         "../reducing-Commercial-Aviation-Fatalities/test.csv", dtype=dtypes)
     print("Load data successfully.")
@@ -139,4 +147,6 @@ if __name__ == "__main__":
     submission = pd.DataFrame(np.concatenate((np.arange(len(test_df))[
                               :, np.newaxis], pred_test), axis=1), columns=['id', 'A', 'B', 'C', 'D'])
     submission['id'] = submission['id'].astype(int)
+    print("writing result to csv file..")
     submission.to_csv("./results/submission_lightGBM_1.csv", index=False)
+    print("done.")
